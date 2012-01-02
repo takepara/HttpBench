@@ -1,0 +1,7 @@
+HttpBench
+
+ApacheBenchがHTTPSに対して上手く取れない！
+ApacheじゃなくてIISを使ってるんです。
+
+なので、ABを意識したオプションでHBを作成。
+まだ、オプション少ないですけど。
