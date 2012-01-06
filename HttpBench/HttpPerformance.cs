@@ -51,14 +51,14 @@ namespace HttpBench
                     while (_requestTimes > 0)
                     {
                         Interlocked.Decrement(ref _requestTimes);
-                        if (echoCount > 0 && _requestTimes % echoCount == 0)
-                            Console.WriteLine("Completed {0} requests", setting.Times - _requestTimes);
 
                         if (setting.WaitMilliseconds > 0)
                             Thread.Sleep(setting.WaitMilliseconds);
 
                         var result = HttpGet(setting);
                         results.Add(result);
+                        if (echoCount >= 2 && results.Count % echoCount == 0)
+                            Console.WriteLine("Completed {0} requests", setting.Times - _requestTimes);
                     }
 
                     if (results.Count >= setting.Times && _requestTimes <= 0)
@@ -74,23 +74,23 @@ namespace HttpBench
             Console.WriteLine("");
         }
 
-        private int LoadBytes(HttpWebResponse response)
+        private int ResponseBytes(HttpWebResponse response)
         {
             if (response == null)
                 throw new ArgumentNullException("response");
 
-            var loadBytes = 0;
+            var responseBytes = 0;
+            int bytes;
             using (var stream = response.GetResponseStream())
             {
                 using (var reader = new BinaryReader(stream))
                 {
-                    int bytes;
                     while ((bytes = reader.ReadBytes(10240).Length) != 0)
-                        loadBytes += bytes;
+                        responseBytes += bytes;
                 }
             }
 
-            return loadBytes;
+            return responseBytes;
         }
 
         private HttpResult HttpGet(HttpSettings setting)
@@ -115,7 +115,7 @@ namespace HttpBench
             {
                 var response = (HttpWebResponse)request.GetResponse();
                 result.Status = (int)response.StatusCode;
-                result.TransferLength = LoadBytes(response);
+                result.TransferLength = ResponseBytes(response);
             }
             catch (WebException we)
             {
@@ -123,7 +123,7 @@ namespace HttpBench
                 if (response != null)
                 {
                     result.Status = (int)response.StatusCode;
-                    result.TransferLength = LoadBytes(response);
+                    result.TransferLength = ResponseBytes(response);
                 }
             }
 
