@@ -57,8 +57,10 @@ namespace HttpBench
 
                         var result = HttpGet(setting);
                         results.Add(result);
-                        if (echoCount >= 2 && results.Count % echoCount == 0)
-                            Console.WriteLine("Completed {0} requests", setting.Times - _requestTimes);
+
+                        var requestedCount = results.Count;
+                        if (echoCount >= 2 && requestedCount % echoCount == 0)
+                            Console.WriteLine("Completed {0} requests", requestedCount);
                     }
 
                     if (results.Count >= setting.Times && _requestTimes <= 0)
