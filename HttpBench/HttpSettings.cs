@@ -15,8 +15,11 @@ namespace HttpBench
         [Arg(3, "A","BASIC認証(uid:pwd)")]
         public string BasicAuthentication { get; set; }
 
-        [Arg(4, "M", "リクエスト前待ち時間(ms)")]
+        [Arg(4, "Rwm", "リクエスト前待ち時間(ms)")]
         public int WaitMilliseconds { get; set; }
+
+        [Arg(5, "Wu", "準備リクエスト回数")]
+        public int Warmup { get; set; }
 
         [Arg(0, "U", "URL")]
         public Uri Url { get; set; }

@@ -40,6 +40,14 @@ namespace HttpBench
             var echoCount = setting.Times / 10;
 
             Console.WriteLine("Benchmarking {0}", setting.Url);
+            if(setting.Warmup > 0)
+            {
+                Console.WriteLine(" warmup {0} requests", setting.Warmup);
+                for (int i = 0; i < setting.Warmup; i++)
+                {
+                    HttpGet(setting);
+                }
+            }
             Console.WriteLine("");
 
             var threads = new List<Thread>();
@@ -100,7 +108,7 @@ namespace HttpBench
             if (setting == null)
                 throw new ArgumentNullException("setting");
 
-            var result = new HttpResult { ManagedThreadId = Thread.CurrentThread.ManagedThreadId };
+            var result = new HttpResult { ManagedThreadId = Thread.CurrentThread.ManagedThreadId, Start = DateTime.Now };
             var sw = new Stopwatch();
             sw.Start();
 
@@ -131,6 +139,7 @@ namespace HttpBench
 
             sw.Stop();
             result.ElapsedMilliseconds = sw.ElapsedMilliseconds;
+            result.End = DateTime.Now;
 
             return result;
         }
